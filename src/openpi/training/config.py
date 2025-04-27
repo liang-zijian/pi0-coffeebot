@@ -469,6 +469,9 @@ _CONFIGS = [
         data=LeRobotCoffeeDataConfig(
             # 如果只本地训练，把 local_files_only 设 True
             base_config=DataConfig(local_files_only=True, prompt_from_task=True),
+            assets=AssetsConfig(
+                asset_id="isaaclab/Franka-Coffee-Gamepad-Control-Direct-v0",
+            ),
         ),
         # 加载官方 base checkpoint
         weight_loader=weight_loaders.CheckpointWeightLoader(

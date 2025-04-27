@@ -42,7 +42,9 @@ class CoffeeInputs(transforms.DataTransformFn):
             "image_mask": dict(zip(names, masks, strict=True)),
         }
         if "actions" in data:  inputs["actions"] = data["actions"]
-        if "prompt"  in data:  inputs["prompt"]  = data["prompt"]
+        
+        inputs["prompt"]  = "move the coffee cup to the coffee machine"
+        
         return inputs
 
 @dataclasses.dataclass(frozen=True)
