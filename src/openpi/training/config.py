@@ -464,7 +464,7 @@ _CONFIGS = [
         # 用唯一名字方便 CLI 调用
         name="pi0_fast_coffee",
         # 选 π₀-FAST，动作 8 维，chunk 长度 10 （保持跟 Droid 示例一致）
-        model=pi0_fast.Pi0FASTConfig(action_dim=8, action_horizon=10, max_token_len=180),
+        model=pi0.Pi0Config(paligemma_variant="gemma_2b_lora", action_expert_variant="gemma_300m_lora", action_dim=8, action_horizon=10, max_token_len=180),
         # 数据集与变换
         data=LeRobotCoffeeDataConfig(
             # 如果只本地训练，把 local_files_only 设 True
@@ -475,7 +475,7 @@ _CONFIGS = [
         ),
         # 加载官方 base checkpoint
         weight_loader=weight_loaders.CheckpointWeightLoader(
-            "s3://openpi-assets/checkpoints/pi0_fast_base/params"
+            "s3://openpi-assets/checkpoints/pi0_base/params"
         ),
         num_train_steps=20_000,          # 或按数据量自行调
     ),
