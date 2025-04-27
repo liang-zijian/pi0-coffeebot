@@ -21,7 +21,8 @@ class CoffeeInputs(transforms.DataTransformFn):
 
     def __call__(self, data: dict) -> dict:
         # 1) 关节+夹爪拼 state，并 pad 到 action_dim
-        state = transforms.pad_to_dim(data["state"], self.action_dim)
+        STATE_DIM = 17
+        state = transforms.pad_to_dim(data["state"], STATE_DIM)
         # 2) 三路相机
         in_images = data["images"]
         base = _parse(in_images["rgb_gemini2_0"])
@@ -41,7 +42,8 @@ class CoffeeInputs(transforms.DataTransformFn):
             "image": dict(zip(names, (base, base2, wrist), strict=True)),
             "image_mask": dict(zip(names, masks, strict=True)),
         }
-        if "actions" in data:  inputs["actions"] = data["actions"]
+        if "actions" in data:  
+            inputs["actions"] = transforms.pad_to_dim(data["actions"], self.action_dim)
         
         inputs["prompt"]  = "move the coffee cup to the coffee machine"
 
