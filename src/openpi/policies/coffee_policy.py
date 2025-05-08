@@ -16,8 +16,8 @@ def _parse(image):
 
 @dataclasses.dataclass(frozen=True)
 class CoffeeInputs(transforms.DataTransformFn):
-    action_dim: int
-    model_type: _model.ModelType = _model.ModelType.PI0
+    action_dim: int 
+    model_type: _model.ModelType = _model.ModelType.PI0_FAST
 
     def __call__(self, data: dict) -> dict:
         # 1) 关节+夹爪拼 state，并 pad 到 action_dim
@@ -29,7 +29,7 @@ class CoffeeInputs(transforms.DataTransformFn):
         base2 = _parse(in_images["rgb_gemini2_1"])
         wrist = _parse(in_images["ee_cam"])
 
-        if self.model_type == _model.ModelType.PI0:
+        if self.model_type == _model.ModelType.PI0_FAST:
             names = ("base_0_rgb", "base_1_rgb", "wrist_0_rgb")
             masks = (True, True, True)          # FAST 模型不需要 padding mask
         else:                                   # 纯 π₀
@@ -44,6 +44,7 @@ class CoffeeInputs(transforms.DataTransformFn):
         }
         if "actions" in data:  
             inputs["actions"] = transforms.pad_to_dim(data["actions"], self.action_dim)
+            #inputs["actions"] = data["actions"]
         
         inputs["prompt"]  = "move the coffee cup to the coffee machine"
 

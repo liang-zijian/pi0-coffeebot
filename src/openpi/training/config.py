@@ -42,12 +42,12 @@ class AssetsConfig:
     centralized location. For example, to load the norm stats for the Trossen robot from the base model checkpoint
     during fine-tuning, use:
 
-    ```
+    ‍```
     AssetsConfig(
         assets_dir="s3://openpi-assets/checkpoints/pi0_base/assets",
         asset_id="trossen",
     )
-    ```
+    ‍```
     """
 
     # Assets directory. If not provided, the config assets_dirs will be used. This is useful to load assets from
@@ -416,7 +416,7 @@ class TrainConfig:
     # How often (in steps) to save checkpoints.
     save_interval: int = 1000
     # If set, any existing checkpoints matching step % keep_period == 0 will not be deleted.
-    keep_period: int | None = 5000
+    keep_period: int | None = 500000
 
     # If true, will overwrite the checkpoint directory if it already exists.
     overwrite: bool = False
@@ -464,22 +464,26 @@ _CONFIGS = [
         # 用唯一名字方便 CLI 调用
         name="pi0_fast_coffee",
         # 选 π₀-FAST，动作 8 维，chunk 长度 10 （保持跟 Droid 示例一致）
-        model=pi0.Pi0Config(
+        model=pi0_fast.Pi0FASTConfig(
             paligemma_variant="gemma_2b", # without lora 
-            action_expert_variant="gemma_300m_lora", # with lora
+            #action_expert_variant="gemma_300m_lora", # with lora
             action_dim=32, 
             action_horizon=10, 
             max_token_len=180
         ),
 
         # only fine-tune the action expert
-        freeze_filter=pi0.Pi0Config(
+        freeze_filter=pi0_fast.Pi0FASTConfig(
             paligemma_variant="gemma_2b", 
-            action_expert_variant="gemma_300m_lora"
+            #action_expert_variant="gemma_300m_lora"
         ).get_freeze_filter(),
 
         # turn off EMA
         ema_decay=None,
+
+        checkpoint_base_dir = "/hy-tmp/checkpoints",
+
+        save_interval=5000,
 
         # 数据集与变换
         data=LeRobotCoffeeDataConfig(
@@ -491,9 +495,9 @@ _CONFIGS = [
         ),
         # 加载官方 base checkpoint
         weight_loader=weight_loaders.CheckpointWeightLoader(
-            "s3://openpi-assets/checkpoints/pi0_base/params"
+            "s3://openpi-assets/checkpoints/pi0_fast_base/params"
         ),
-        num_train_steps=20_000,          # 或按数据量自行调
+        num_train_steps=15_000, 
     ),
 
     #
